@@ -1,10 +1,14 @@
 var express = require("express");
+var path = require('path');
 var fs = require('fs');
 var app = express();
-var jSONObjCreator = require('./src/creator_info/creator_info.json');
-var jSONObjWork = require('./src/work_info/work_info.json');
+// var jSONObjCreator = require('./src/creator_info/creator_info.json');
+// var jSONObjWork = require('./src/work_info/work_info.json');
 var CREATOR_TYPE = 'CREATOR';
 var WORK_TYPE = 'WORK';
+
+var CREATOR_FILE = path.join(__dirname, '/src/creator_info/creator_info.json');
+var WORK_FILE = path.join(__dirname, '/src/work_info/work_info.json');
 
 function randomJSONObj(obj, type) {
     var jSONObj = [];
@@ -23,21 +27,35 @@ app.get("/", function(req, res) {
 });
 
 app.get("/creator", function(req, res) {
-    var jSONObj = {"creator": null};
-    var retJSON = randomJSONObj(jSONObjCreator.creator, CREATOR_TYPE);
+    // var jSONObj = {"creator": null};
+    // var retJSON = randomJSONObj(jSONObjCreator.creator, CREATOR_TYPE);
 
-    jSONObj.creator = retJSON;
+    // jSONObj.creator = retJSON;
 
-    res.json(jSONObj);
+    // res.json(jSONObj);
+    fs.readFile(CREATOR_FILE, function(err, data) {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+    res.json(JSON.parse(data));
+  });
 });
 
 app.get("/work", function(req, res) {
-    var jSONObj =  {"work": null};
-    var retJSON = randomJSONObj(jSONObjWork.work, WORK_TYPE);
+    // var jSONObj =  {"work": null};
+    // var retJSON = randomJSONObj(jSONObjWork.work, WORK_TYPE);
 
-    jSONObj.work = retJSON;
+    // jSONObj.work = retJSON;
 
-    res.json(jSONObj);
+    // res.json(jSONObj);
+    fs.readFile(WORK_FILE, function(err, data) {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+    res.json(JSON.parse(data));
+  });
 });
 
 app.use("/image/creator", express.static(__dirname + '/src/img/creators'));

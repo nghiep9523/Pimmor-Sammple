@@ -2,63 +2,18 @@
 <html lang="en">
 
 <head>
-  <title>Pimmor Sample</title>
-  <link href="./css/styles.css" rel="stylesheet" type="text/css">
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600italic,600,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
-  <script type="text/javascript" src="./js/script.js"></script>
+    <title>Pimmor Sample</title>
+    <link href="./css/styles.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600italic,600,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.16/browser.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 </head>
 
 <body>
-  <div class="wrapper">
-    <div class="popup-overlay"></div>
-    <div class="popup">
-      <div class="popup-controls">
-        <span class="popup-close">X</span>
-      </div>
-      <div class="popup-content"></div>
-    </div>
-    <div class="right_content">
-      <div class="creators">
-        <div>
-          <p class="section_title"><span>Creators of the month</span></p>
-          <a class="see_all" href="#"><span>see all</span></a>
-        </div>
-        <div class="row_detail"></div>
-      </div>
-      <div class="works">
-        <div>
-          <p class="section_title"><span>Feature Works</span></p>
-          <a class="see_all safari_compat" href="#"><span>see all</span></a>
-        </div>
-        <div class="row_detail"></div>
-      </div>
-    </div>
-    <div class="left_content">
-      <div class="header">
-        <div class="logo">
-          <img src="logo.png" alt="Pimmor Logo">
-        </div>
-        <ul class="header_buttons">
-          <li><a href="#"><span>Sign In</span></a></li>
-          <li><a href="#"><span>Create an account</span></a></li>
-        </ul>
-      </div>
-      <div class="slogan">
-        <h1 class="slogan1"><span>Let people know about your next masterpiece</span></h1>
-        <h3 class="slogan2"><span>Showcase your works of books, photos, drawing or just simply be inspired</span></h3>
-      </div>
-      <div class="buttons">
-        <a class="upload" href="#"><span>Start Uploading</span></a>
-        <a class="search" href="#"><span>Start Searching</span></a>
-      </div>
-      <ul class="footer">
-        <li><a href="#"><span>About Us</span></a></li>
-        <li><a href="#"><span>Privacy Policy</span></a></li>
-        <li><a href="#"><span>Term of Use</span></a></li>
-        <li><span>@ 2015 Pimmor. All rights reserved</span></li>
-      </ul>
-    </div>
-  </div>
+    <div id="wrapper"></div>
+    <script type="text/babel" src="./js/react.js"></script>
 </body>
 
 </html>

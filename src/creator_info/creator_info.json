@@ -1,22 +1,26 @@
-{
-	"creator" : [{
+[
+	{
+		"id" : "1",
 		"img" : "image/creator/1.png",
 		"name" : "Jonny Evans",
 		"job" : "Painting Artist"
 	},
 	{
+		"id" : "2",
 		"img" : "image/creator/2.png",
 		"name" : "Alexandra Jens",
 		"job" : "Book Author"
 	},
 	{
+		"id" : "3",
 		"img" : "image/creator/3.png",
 		"name" : "Melissa Da Gea",
 		"job" : "Photographer"
 	},
 	{
+		"id" : "4",
 		"img" : "image/creator/4.png",
 		"name" : "Lionel Messi",
 		"job" : "Book Author"
-	}]
-}
+	}
+]
