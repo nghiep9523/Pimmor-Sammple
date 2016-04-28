@@ -1,2 +1,1 @@
 # Pimmor-Sammple
-# Pimmor-Sammple

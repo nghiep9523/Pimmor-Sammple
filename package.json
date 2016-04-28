@@ -4,14 +4,22 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.13.4",
-    "httpdispatcher": "^1.0.0"
+    "alt": "^0.18.4",
+    "express": "^4.13.4"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "author": "",
-  "license": "ISC"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nghiep9523/Pimmor-Sammple.git"
+  },
+  "author": "Hiep",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nghiep9523/Pimmor-Sammple/issues"
+  },
+  "homepage": "https://github.com/nghiep9523/Pimmor-Sammple#readme"
 }
