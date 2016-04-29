@@ -10,17 +10,17 @@ var WORK_TYPE = 'WORK';
 var CREATOR_FILE = path.join(__dirname, '/src/creator_info/creator_info.json');
 var WORK_FILE = path.join(__dirname, '/src/work_info/work_info.json');
 
-function randomJSONObj(obj, type) {
-    var jSONObj = [];
-    var random = Math.floor((Math.random() * obj.length) + 1);
-    var count = 0;
-    while (count < random) {
-        var i = Math.floor((Math.random() * obj.length));
-        jSONObj.push(obj[i]);
-        count++;
-    }
-    return jSONObj;
-}
+// function randomJSONObj(obj, type) {
+//     var jSONObj = [];
+//     var random = Math.floor((Math.random() * obj.length) + 1);
+//     var count = 0;
+//     while (count < random) {
+//         var i = Math.floor((Math.random() * obj.length));
+//         jSONObj.push(obj[i]);
+//         count++;
+//     }
+//     return jSONObj;
+// }
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
