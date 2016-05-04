@@ -5,13 +5,14 @@ var connectToStores = require('alt-utils/lib/connectToStores')
 var ContentActions = require('../actions/ContentActions');
 var CreatorStore = require('../stores/CreatorStore');
 var WorkStore = require('../stores/WorkStore');
-
+var PopupStore = require('../stores/PopupStore');
 
 //Container
 var Container = React.createClass({
     render: function() {
         return (
             <div>
+                <PopupContainer/>
 				<LeftContent/>
 				<RightContent/>
 			</div>
@@ -20,55 +21,54 @@ var Container = React.createClass({
 });
 
 //Popup
-// var Popup = React.createClass({
-//     getInitialState: function() {
-//         return {
-//             show: true
-//         };
-//     },
-//     handleClick: function() {
-//         this.setState({ show: !this.state.show});
-//     },
-//     render: function() {
-//     	var popup;
-//     	if (this.state.show) {
-//         return (
-//             <div>
-// 				<div className="popup-overlay" onClick={this.handleClick}></div>
-//     			<div className="popup">
-//       				<div className="popup-controls">
-//         				<span className="popup-close" onClick={this.handleClick}>X</span>
-//         			</div>
-//         			<div className="popup-content">
-//         					<img src={this.props.img} alt="Popup Image"/>
-//         					{this.props.creator ? 
-//         					<div>
-//         						<p className="name"><span>{this.props.name}</span></p>
-// 								<p className="job"><span>{this.props.job}</span></p>
-// 							</div>
-//         					: null}
-//         			</div>
-//       			</div>      			
-//     		</div>
-//         );
-//   	  }
-//     }
-// });
+var PopupContainer = connectToStores({
+     getStores: function() {
+    return [PopupStore]
+  },
 
-// var PopupContainer = connectToStores({
-//      getStores() {
-//     return [PopupStore]
-//   },
+  getPropsFromStores: function() {
+    var popupState = PopupStore.getState()
+    return {
+      info: popupState.info,
+      type: popupState.type,
+      show: popupState.show
+    }
+  }
+}, React.createClass({
+    displayName: 'PopupContainer',
+    handleClick: function() {
+        ContentActions.hidePopup(this.props.type);
+    },
+    render : function() {
+        if(this.props.show == false)
+            return null;
+        var creator = false;
+        if(this.props.type == "creator") {
+            creator = true;
+        }
+        else {
+            creator = false;
+        }
 
-//   getPropsFromStores() {
-//     var popupState = LocationStore.getState()
-//     return {
-//       info: popupState.info;
-//     }
-//   }
-// }, React.createClass({
-//     render
-// }))
+        return (
+            <div>
+             <div className="popup-overlay" onClick={this.handleClick}></div>
+             <div className="popup">
+                     <div className="popup-controls">
+                     <span className="popup-close" onClick={this.handleClick}>X</span>
+                 </div>
+                 <div className="popup-content">
+                         <img src={this.props.info.img} alt="Popup Image"/>
+                         {creator ? <div>
+                        <p className="name"><span>{this.props.info.name}</span></p>
+                        <p className="job"><span>{this.props.info.job}</span></p>
+                    </div>: null}
+                 </div>
+                 </div>                  
+         </div>
+        );
+    }
+}))
 
 //Left Content
 var LeftContentHeader = React.createClass({
@@ -78,7 +78,7 @@ var LeftContentHeader = React.createClass({
         	<div className="logo">
           		<img src="logo.png" alt="Pimmor Logo"/>
         	</div>
-        	<ul className="header_buttons">
+        	<ul className="header-buttons">
           		<li><a href="#"><span>Sign In</span></a></li>
           		<li><a href="#"><span>Create an account</span></a></li>
         	</ul>
@@ -125,7 +125,7 @@ var LeftContentFooter = React.createClass({
 var LeftContent = React.createClass({
         render: function() {
             return (
-                <div className="left_content">
+                <div className="left-content">
 					<LeftContentHeader/>
 					<LeftContentSlogan/>
 					<LeftContentButtons/>
@@ -133,173 +133,120 @@ var LeftContent = React.createClass({
 				</div>
             );
         }
-    })
-    //Right Content 
-var RightContent = React.createClass({
-    render: function() {
-        return (
-            <div className="right_content">
-				<CreatorsBox/>
-				<WorksBox/>
-			</div>
-        );
+    });
+//Right Content
+var RightContent = connectToStores({
+    getStores: function() {
+        return [WorkStore, CreatorStore];
+    },
+
+    getPropsFromStores: function() {
+        var creatorState = CreatorStore.getState();
+        var workState = WorkStore.getState();
+        return {
+            creatorInfo: creatorState.info,
+            workInfo: workState.info
+        }
     }
-})
-
-
-
-var CreatorsBox = connectToStores ({
-    getStores() {
-    return [CreatorStore]
-  },
-
-  getPropsFromStores() {
-    var contentState = CreatorStore.getState();
-
-    return {
-      info: contentState.info
-    }
-  }
-}, React.createClass({
+}, React.createClass({ 
     getInitialState: function() {
         return {
-              type : 'creator'
+            type: [
+                "creator",
+                "work"
+            ]
         };
     },
     componentWillMount: function() {
-        ContentActions.fetchContent(this.state.type);
+          ContentActions.fetchContent(this.state.type);
+    },
+    render: function() {
+        return(
+            <div className = "right-content">
+                <RightBox data = {this.props.creatorInfo} type = "creator"/>
+                <RightBox data = {this.props.workInfo} type = "work"/>
+            </div>
+        );
+    }
+
+}));
+
+var RightBox = React.createClass({
+    componentWillMount: function() {
+        ContentActions.fetchContent(this.props.type);
     },
     render: function() {        
         return (
             <div> 
-                <CreatorsHeader/>
-                <CreatorsRow data = {this.props.info}/>
+                <RightHeader type={this.props.type}/>
+                <RightRow data={this.props.data} type={this.props.type}/>
             </div>
         );
     }
-}));
+});
 
-var CreatorsHeader = React.createClass({
+var RightHeader = React.createClass({
     render: function() {
+        var title;
+        switch(this.props.type) {
+            case "creator":
+                title = 'Creators of the month';
+                break;
+            case "work": 
+                title = 'Feature Works'
+                break;
+            default:
+                break;
+        }
         return (
             <div>
-        		<p className="section_title"><span>Creators of the month</span></p>
-        		<a className="see_all" href="#"><span>see all</span></a>
+        		<p className="section-title"><span>{title}</span></p>
+        		<a className="see-all" href="#"><span>see all</span></a>
       		</div>
         );
     }
 });
 
-var CreatorsRow = React.createClass({
+var RightRow = React.createClass({
     render: function() {
         var rowNodes = this.props.data.map(function(data) {
             return (
-                <CreatorImage key={data.id} img={data.img} name={data.name} job={data.job}></CreatorImage>
+                <RightImage key={data.id} data={data} type ={this.props.type}></RightImage>
             );
         });
         return (
-            <div className = "row_detail">
+            <div className = "row-detail">
     			{rowNodes}
     		</div>
         );
     }
 });
 
-var CreatorImage = React.createClass({
-    getInitialState: function() {
-        return {
-            showPopup: false
-        };
-    },
+var RightImage = React.createClass({
     handleClick: function() {
-        this.setState({ showPopup: !this.state.showPopup });
+        ContentActions.popupContent(this.props.data, this.props.type);
     },
     render: function() {
+        var additionalContent;
+        switch(this.props.type) {
+            case "creator":
+                additionalContent = <div><p className="name"><span>{this.props.data.name}</span></p><p className="job"><span>{this.props.data.job}</span></p></div>
+                break;
+            case "work": 
+                additionalContent = null;
+                break;
+            default:
+                additionalContent = null;
+                break;
+        }
         return (
             <a className="item" href="#" onClick={this.handleClick}>
-				<img src={this.props.img} alt="Creator Image"/>
-				<p className="name"><span>{this.props.name}</span></p>
-				<p className="job"><span>{this.props.job}</span></p>
-				{this.state.showPopup ? <Popup creator={true} img={this.props.img} name={this.props.name} job={this.props.job}/> : null} 
+				<img src={this.props.data.img} alt="Image"/>	
+                {additionalContent}		
 			</a>
         );
     }
 });
-
-var WorksBox = connectToStores ({
-    getStores() {
-    return [WorkStore]
-  },
-
-  getPropsFromStores() {
-    var contentState = WorkStore.getState()
-    return {
-      info: contentState.info
-    }
-  }
-}, React.createClass({
-    getInitialState: function() {
-        return {
-              type : 'work'
-        };
-    },
-    componentWillMount: function() {
-        ContentActions.fetchContent(this.state.type);
-    },
-    render: function() {        
-        return (
-            <div> 
-                <WorksHeader/>
-                <WorksRow data = {this.props.info}/>
-            </div>
-        );
-    }
-}));
-
-var WorksHeader = React.createClass({
-    render: function() {
-        return (
-            <div>
-        		<p className="section_title"><span>Feature Works</span></p>
-        		<p className="see_all safari_compat" href="#"><span>see all</span></p>
-      		</div>
-        );
-    }
-});
-
-var WorksRow = React.createClass({
-    render: function() {
-        var rowNodes = this.props.data.map(function(data) {
-            return (
-                <WorkImage key={data.id} img={data.img}></WorkImage>
-            );
-        });
-        return (
-            <div className="row_detail">
-    			{rowNodes}
-    		</div>
-        );
-    }
-});
-
-var WorkImage = React.createClass({
-	getInitialState: function() {
-        return {
-            showPopup: false
-        };
-    },
-    handleClick: function() {
-        this.setState({ showPopup: !this.state.showPopup });
-    },
-    render: function() {
-        return (
-            <a className="item" href="#" onClick={this.handleClick}>
-				<img src={this.props.img} alt="Work Image"/>
-				{this.state.showPopup ? <Popup img={this.props.img}/> : null} 				
-			</a>
-        );
-    }
-})
 
 ReactDOM.render(<Container/>,
     document.getElementById('wrapper')

@@ -10,8 +10,8 @@ a {
   font-size: 14px;
 }
 
-.left_content,
-.right_content {
+.left-content,
+.right-content {
   font-family: 'Open Sans', sans-serif;
   float: right;
 }
@@ -50,14 +50,13 @@ a {
 
 .popup-content {
   padding: 30px;
-}
-.popup-content div {
-  margin-left: 10px;
+  width: 60%;
+  margin: auto;
 }
 
 /*Left Content*/
 
-.left_content {
+.left-content {
   background-image: url(bg.png);
   background-repeat: no-repeat;
   margin: 0;
@@ -72,17 +71,17 @@ a {
   min-width: 800px;
 }
 
-.header_buttons,
+.header-buttons,
 .logo {
   margin-top: 50px;
 }
 
-.header_buttons {
+.header-buttons {
   float: right;
   margin-right: 50px;
 }
 
-.header_buttons li {
+.header-buttons li {
   display: inline-block;
 }
 
@@ -107,7 +106,7 @@ a {
   height: 10px;
 }
 
-.left_content a {
+.left-content a {
   color: white;
   margin-right: 50px;
 }
@@ -130,7 +129,7 @@ a {
   display: inline-block;
   width: 200px;
   height: 30px;
-  border-radius: 2px;
+  border-radius: 5px;
   text-align: center;
   line-height: 30px;
   color: white;
@@ -173,7 +172,7 @@ a {
 
 /*Right Content*/
 
-.right_content {
+.right-content {
   position: absolute;
   top: 0;
   right: 0;
@@ -182,7 +181,7 @@ a {
   margin-top: 20px;
 }
 
-.row_detail {
+.row-detail {
   clear: both;
 }
 
@@ -207,14 +206,14 @@ a {
   text-align: left;
 }
 
-.section_title {
+.section-title {
   float: left;
   font-size: 21px;
   font-weight: bold;
   color: #585858
 }
 
-.see_all {
+.see-all {
   position: absolute;
   line-height: 30px;
   color: #8a8a8a;
@@ -223,7 +222,7 @@ a {
   clear: both;
 }
 
-.see_all span {
+.see-all span {
   font-size: 12px;
   text-decoration: underline;
 }
@@ -233,27 +232,27 @@ a {
 
 @media all and (min-width: 1381px)
 {
-  .right_content {
+  .right-content {
     min-width: 0;
     width: 560px;
   }
 }
 
 @media all and (min-width: 1100px) and (max-width: 1380px) {
-  .left_content {
+  .left-content {
     right: 320px;
   }
-  .right_content {
+  .right-content {
     width: 300px;
     min-width: 0px;
   }
 }
 
 @media all and (max-width: 1110px) {
-  .right_content {
+  .right-content {
     display: none;
   }
-  .left_content {
+  .left-content {
     right: 0;
     top: 0;
     left: 0;
@@ -271,7 +270,7 @@ a {
   .buttons {
     top: 60%;
   }
-  .left_content {
+  .left-content {
     min-height: 400px;
   }
 }

@@ -15,6 +15,12 @@ var CreatorStore = alt.createStore({
         errorMessage: null
     },
 
+    publicMethods: {
+        getCreator: function() {
+            return this.state.info;
+        }
+    },
+
     handleFetchContent: function() {
         this.setState({ info: [] });
     },
