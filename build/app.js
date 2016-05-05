@@ -23640,13 +23640,22 @@ var callApi = require('../callApi/callApi');
 var ContentActions = alt.createActions({
     fetchContent: function(typeList) {
         for (var i = 0; i < typeList.length; i++) {
-            callApi(typeList[i]).then(function(res) {
-                updateContent(res);
-            });
+            (function() {
+                var type = typeList[i];
+                callApi(type).then(function(res) {
+                    ContentActions.updateContent(res, type);
+                }, function(err) {
+                    ContentActions.getContentFailed(err);
+                });
+            })();
         }
+        return typeList;
     },
-    updateContent: function(info) {
-        return info;
+    updateContent: function(info, type) {
+        return {
+            info: info,
+            type: type
+        };
     },
     getContentFailed: function(error) {
         return error;
@@ -23658,7 +23667,7 @@ var ContentActions = alt.createActions({
         };
     },
 
-    hidePopup: function(type){
+    hidePopup: function(type) {
         return type;
     }
 });
@@ -23676,21 +23685,20 @@ var request = require('superagent');
 var Promise = require('promise');
 
 var callApi = function(type) {
-	return new Promise (function(resolve, reject){
-		request
-			var url = '/' + type;
-        
+    return new Promise(function(resolve, reject) {
+        var url = '/' + type;
+
         request
             .get(url)
             .type('json')
             .end(function(err, res) {
                 if (err || !res.ok)
-                   	reject(err);
+                    reject(err);
                 else {
-					resolve(res.body);                    
+                    resolve(res.body);
                 }
             });
-	});
+    });
 }
 
 module.exports = callApi;
@@ -23704,6 +23712,7 @@ var ContentActions = require('../actions/ContentActions');
 var CreatorStore = require('../stores/CreatorStore');
 var WorkStore = require('../stores/WorkStore');
 var PopupStore = require('../stores/PopupStore');
+var callApi = require('../callApi/callApi');
 
 //Container
 var Container = React.createClass({displayName: "Container",
@@ -23720,11 +23729,11 @@ var Container = React.createClass({displayName: "Container",
 
 //Popup
 var PopupContainer = connectToStores({
-     getStores: function() {
+     getStores() {
     return [PopupStore]
   },
 
-  getPropsFromStores: function() {
+  getPropsFromStores() {
     var popupState = PopupStore.getState()
     return {
       info: popupState.info,
@@ -23834,11 +23843,11 @@ var LeftContent = React.createClass({displayName: "LeftContent",
     });
 //Right Content
 var RightContent = connectToStores({
-    getStores: function() {
+    getStores() {
         return [WorkStore, CreatorStore];
     },
 
-    getPropsFromStores: function() {
+    getPropsFromStores() {
         var creatorState = CreatorStore.getState();
         var workState = WorkStore.getState();
         return {
@@ -23846,7 +23855,9 @@ var RightContent = connectToStores({
             workInfo: workState.info
         }
     }
-}, React.createClass({ 
+}, React.createClass({
+    displayName: "Right Content",
+
     getInitialState: function() {
         return {
             type: [
@@ -23856,7 +23867,7 @@ var RightContent = connectToStores({
         };
     },
     componentWillMount: function() {
-          ContentActions.fetchContent(this.state.type);
+        ContentActions.fetchContent(this.state.type);
     },
     render: function() {
         return(
@@ -23870,9 +23881,6 @@ var RightContent = connectToStores({
 }));
 
 var RightBox = React.createClass({displayName: "RightBox",
-    componentWillMount: function() {
-        ContentActions.fetchContent(this.props.type);
-    },
     render: function() {        
         return (
             React.createElement("div", null, 
@@ -23907,9 +23915,10 @@ var RightHeader = React.createClass({displayName: "RightHeader",
 
 var RightRow = React.createClass({displayName: "RightRow",
     render: function() {
+        var type = this.props.type;
         var rowNodes = this.props.data.map(function(data) {
             return (
-                React.createElement(RightImage, {key: data.id, data: data, type: this.props.type})
+                React.createElement(RightImage, {key: data.id, data: data, type: type})
             );
         });
         return (
@@ -23928,7 +23937,10 @@ var RightImage = React.createClass({displayName: "RightImage",
         var additionalContent;
         switch(this.props.type) {
             case "creator":
-                additionalContent = React.createElement("div", null, React.createElement("p", {className: "name"}, React.createElement("span", null, this.props.data.name)), React.createElement("p", {className: "job"}, React.createElement("span", null, this.props.data.job)))
+                additionalContent = React.createElement("div", null, 
+                    React.createElement("p", {className: "name"}, React.createElement("span", null, this.props.data.name)), 
+                    React.createElement("p", {className: "job"}, React.createElement("span", null, this.props.data.job))
+                )
                 break;
             case "work": 
                 additionalContent = null;
@@ -23950,7 +23962,7 @@ ReactDOM.render(React.createElement(Container, null),
     document.getElementById('wrapper')
 );
 
-},{"../actions/ContentActions":199,"../alt":200,"../stores/CreatorStore":203,"../stores/PopupStore":204,"../stores/WorkStore":205,"alt-utils/lib/connectToStores":1,"react":192,"react-dom":27}],203:[function(require,module,exports){
+},{"../actions/ContentActions":199,"../alt":200,"../callApi/callApi":201,"../stores/CreatorStore":203,"../stores/PopupStore":204,"../stores/WorkStore":205,"alt-utils/lib/connectToStores":1,"react":192,"react-dom":27}],203:[function(require,module,exports){
 var alt = require('../alt');
 var ContentActions = require('../actions/ContentActions');
 
@@ -23964,14 +23976,9 @@ var CreatorStore = alt.createStore({
     },
 
     state: {
+        type: "creator",
         info: [],
         errorMessage: null
-    },
-
-    publicMethods: {
-        getCreator: function() {
-            return this.state.info;
-        }
     },
 
     handleFetchContent: function() {
@@ -23979,7 +23986,11 @@ var CreatorStore = alt.createStore({
     },
 
     handleUpdateContent: function(info) {
-        this.setState({ info: info, errorMessage: null });
+        if(info.type == this.state.type) {
+            this.setState({ info: info.info, errorMessage: null });
+        } else {
+            this.setState({errorMessage: "Failed!"});
+        }
     },
 
     handleGetContentFailed: function(errorMessage) {
@@ -24033,6 +24044,7 @@ var WorkStore = alt.createStore({
     },
 
     state: {
+        type: "work",
         info: [],
         errorMessage: null
     },
@@ -24042,7 +24054,11 @@ var WorkStore = alt.createStore({
     },
 
     handleUpdateContent: function(info) {
-        this.setState({ info: info, errorMessage: null });
+        if (info.type == this.state.type) {
+            this.setState({ info: info.info, errorMessage: null });
+        } else {
+            this.setState({errorMessage: "Failed!"});
+        }
     },
 
     handleGetContentFailed: function(errorMessage) {

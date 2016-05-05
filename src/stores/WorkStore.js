@@ -11,6 +11,7 @@ var WorkStore = alt.createStore({
     },
 
     state: {
+        type: "work",
         info: [],
         errorMessage: null
     },
@@ -20,7 +21,11 @@ var WorkStore = alt.createStore({
     },
 
     handleUpdateContent: function(info) {
-        this.setState({ info: info, errorMessage: null });
+        if (info.type == this.state.type) {
+            this.setState({ info: info.info, errorMessage: null });
+        } else {
+            this.setState({errorMessage: "Failed!"});
+        }
     },
 
     handleGetContentFailed: function(errorMessage) {

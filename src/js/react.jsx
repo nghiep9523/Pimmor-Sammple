@@ -6,6 +6,7 @@ var ContentActions = require('../actions/ContentActions');
 var CreatorStore = require('../stores/CreatorStore');
 var WorkStore = require('../stores/WorkStore');
 var PopupStore = require('../stores/PopupStore');
+var callApi = require('../callApi/callApi');
 
 //Container
 var Container = React.createClass({
@@ -22,11 +23,11 @@ var Container = React.createClass({
 
 //Popup
 var PopupContainer = connectToStores({
-     getStores: function() {
+     getStores() {
     return [PopupStore]
   },
 
-  getPropsFromStores: function() {
+  getPropsFromStores() {
     var popupState = PopupStore.getState()
     return {
       info: popupState.info,
@@ -136,11 +137,11 @@ var LeftContent = React.createClass({
     });
 //Right Content
 var RightContent = connectToStores({
-    getStores: function() {
+    getStores() {
         return [WorkStore, CreatorStore];
     },
 
-    getPropsFromStores: function() {
+    getPropsFromStores() {
         var creatorState = CreatorStore.getState();
         var workState = WorkStore.getState();
         return {
@@ -148,7 +149,9 @@ var RightContent = connectToStores({
             workInfo: workState.info
         }
     }
-}, React.createClass({ 
+}, React.createClass({
+    displayName: "Right Content",
+
     getInitialState: function() {
         return {
             type: [
@@ -158,7 +161,7 @@ var RightContent = connectToStores({
         };
     },
     componentWillMount: function() {
-          ContentActions.fetchContent(this.state.type);
+        ContentActions.fetchContent(this.state.type);
     },
     render: function() {
         return(
@@ -172,9 +175,6 @@ var RightContent = connectToStores({
 }));
 
 var RightBox = React.createClass({
-    componentWillMount: function() {
-        ContentActions.fetchContent(this.props.type);
-    },
     render: function() {        
         return (
             <div> 
@@ -209,9 +209,10 @@ var RightHeader = React.createClass({
 
 var RightRow = React.createClass({
     render: function() {
+        var type = this.props.type;
         var rowNodes = this.props.data.map(function(data) {
             return (
-                <RightImage key={data.id} data={data} type ={this.props.type}></RightImage>
+                <RightImage key={data.id} data={data} type ={type}></RightImage>
             );
         });
         return (
@@ -230,7 +231,10 @@ var RightImage = React.createClass({
         var additionalContent;
         switch(this.props.type) {
             case "creator":
-                additionalContent = <div><p className="name"><span>{this.props.data.name}</span></p><p className="job"><span>{this.props.data.job}</span></p></div>
+                additionalContent = <div>
+                    <p className="name"><span>{this.props.data.name}</span></p>
+                    <p className="job"><span>{this.props.data.job}</span></p>
+                </div>
                 break;
             case "work": 
                 additionalContent = null;

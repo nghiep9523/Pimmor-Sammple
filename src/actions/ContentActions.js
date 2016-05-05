@@ -4,14 +4,22 @@ var callApi = require('../callApi/callApi');
 var ContentActions = alt.createActions({
     fetchContent: function(typeList) {
         for (var i = 0; i < typeList.length; i++) {
-            callApi(typeList[i]).then(function(res) {
-                updateContent(res);
-            });
+            (function() {
+                var type = typeList[i];
+                callApi(type).then(function(res) {
+                    ContentActions.updateContent(res, type);
+                }, function(err) {
+                    ContentActions.getContentFailed(err);
+                });
+            })();
         }
         return typeList;
     },
-    updateContent: function(info) {
-        return info;
+    updateContent: function(info, type) {
+        return {
+            info: info,
+            type: type
+        };
     },
     getContentFailed: function(error) {
         return error;
@@ -23,7 +31,7 @@ var ContentActions = alt.createActions({
         };
     },
 
-    hidePopup: function(type){
+    hidePopup: function(type) {
         return type;
     }
 });
