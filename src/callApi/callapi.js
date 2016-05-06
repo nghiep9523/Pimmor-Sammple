@@ -1,5 +1,5 @@
-var request = require('superagent');
-var Promise = require('promise');
+import request from 'superagent';
+import Promise from 'promise';
 
 var callApi = function(type) {
     return new Promise(function(resolve, reject) {
@@ -18,4 +18,4 @@ var callApi = function(type) {
     });
 }
 
-module.exports = callApi;
+export default callApi;

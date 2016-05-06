@@ -7,8 +7,8 @@ var app = express();
 var CREATOR_TYPE = 'CREATOR';
 var WORK_TYPE = 'WORK';
 
-var CREATOR_FILE = path.join(__dirname, '/src/creator_info/creator_info.json');
-var WORK_FILE = path.join(__dirname, '/src/work_info/work_info.json');
+var CREATOR_FILE = path.join(__dirname, '/src/json/creator_info.json');
+var WORK_FILE = path.join(__dirname, '/src/json/work_info.json');
 
 // function randomJSONObj(obj, type) {
 //     var jSONObj = [];
@@ -21,12 +21,6 @@ var WORK_FILE = path.join(__dirname, '/src/work_info/work_info.json');
 //     }
 //     return jSONObj;
 // }
-
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
 
 app.get("/", function(req, res) {
     res.sendFile('index.html', { root: __dirname })
@@ -44,7 +38,10 @@ app.get("/creator", function(req, res) {
       console.error(err);
       process.exit(1);
     }
-    res.json(JSON.parse(data));
+    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    setTimeout(function() {
+      res.json(JSON.parse(data));
+    }, 100000000);
   });
 });
 
@@ -60,7 +57,10 @@ app.get("/work", function(req, res) {
       console.error(err);
       process.exit(1);
     }
-    res.json(JSON.parse(data));
+    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    setTimeout(function() {
+      res.json(JSON.parse(data));
+    }, 100000000);
   });
 });
 

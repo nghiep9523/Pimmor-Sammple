@@ -1,16 +1,41 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var alt = require('../alt');
-var connectToStores = require('alt-utils/lib/connectToStores')
-var ContentActions = require('../actions/ContentActions');
-var CreatorStore = require('../stores/CreatorStore');
-var WorkStore = require('../stores/WorkStore');
-var PopupStore = require('../stores/PopupStore');
-var callApi = require('../callApi/callApi');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ReactSpinner from 'react-spinjs'
+import connectToStores from 'alt-utils/lib/connectToStores';
+import ContentActions from '../actions/ContentActions';
+import ContentStore from '../stores/ContentStore';
+import PopupStore from '../stores/PopupStore';
+
+var TYPE_LIST = {
+        type: [
+            'creator',
+            'work'
+        ]
+    },
+
+    RIGHT_HEADER_TITLE = {
+        creator: 'Creators of the month',
+        work: 'Feature Works'
+    },
+
+    RIGHT_ADDITIONAL_CONTENT = {
+        creator(props) {
+            return (
+                <div>
+                    <p className="name"><span>{props.name}</span></p>
+                    <p className="job"><span>{props.job}</span></p>
+                </div>
+            );
+        },
+
+        work(props) {
+            return null;
+        }
+    };
 
 //Container
-var Container = React.createClass({
-    render: function() {
+class Container extends React.Component {
+    render() {
         return (
             <div>
                 <PopupContainer/>
@@ -19,61 +44,71 @@ var Container = React.createClass({
 			</div>
         );
     }
-});
+}
 
 //Popup
-var PopupContainer = connectToStores({
-     getStores() {
-    return [PopupStore]
-  },
+class PopupContainer extends React.Component {
+    constructor() {
+        super();
 
-  getPropsFromStores() {
-    var popupState = PopupStore.getState()
-    return {
-      info: popupState.info,
-      type: popupState.type,
-      show: popupState.show
+        this.displayName = 'PopupContainer';
     }
-  }
-}, React.createClass({
-    displayName: 'PopupContainer',
-    handleClick: function() {
+
+    static getStores(props) {
+        return [PopupStore];
+    }
+
+    static getPropsFromStores(props) {
+        var popupState = PopupStore.getState();
+
+        return {
+            info: popupState.info,
+            type: popupState.type,
+            show: popupState.show
+        };
+    }
+    
+    handleClick() {
         ContentActions.hidePopup(this.props.type);
-    },
-    render : function() {
-        if(this.props.show == false)
+    }
+
+    render () {
+        if (this.props.show == false) {
             return null;
-        var creator = false;
-        if(this.props.type == "creator") {
-            creator = true;
         }
-        else {
+
+        var creator = false;
+        if (this.props.type == "creator") {
+            creator = true;
+        } else {
             creator = false;
         }
 
         return (
             <div>
-             <div className="popup-overlay" onClick={this.handleClick}></div>
-             <div className="popup">
+                <div className="popup-overlay" onClick={this.handleClick.bind(this)}></div>
+                <div className="popup">
                      <div className="popup-controls">
-                     <span className="popup-close" onClick={this.handleClick}>X</span>
-                 </div>
-                 <div className="popup-content">
-                         <img src={this.props.info.img} alt="Popup Image"/>
+                     <span className="popup-close" onClick={this.handleClick.bind(this)}>X</span>
+                </div>
+                <div className="popup-content">
+                        <img src={this.props.info.img} alt="Popup Image"/>
                          {creator ? <div>
                         <p className="name"><span>{this.props.info.name}</span></p>
                         <p className="job"><span>{this.props.info.job}</span></p>
                     </div>: null}
-                 </div>
-                 </div>                  
-         </div>
+                </div>
+                </div>                  
+            </div>
         );
     }
-}))
+}
+
+PopupContainer = connectToStores(PopupContainer);
 
 //Left Content
-var LeftContentHeader = React.createClass({
-    render: function() {
+class LeftContentHeader extends React.Component {
+    render() {
         return (
             <div className="header">
         	<div className="logo">
@@ -86,10 +121,10 @@ var LeftContentHeader = React.createClass({
       		</div>
         );
     }
-});
+}
 
-var LeftContentSlogan = React.createClass({
-    render: function() {
+class LeftContentSlogan extends React.Component {
+    render() {
         return (
             <div className="slogan">
         		<h1 className="slogan1"><span>Let people know about your next masterpiece</span></h1>
@@ -97,10 +132,10 @@ var LeftContentSlogan = React.createClass({
       		</div>
         );
     }
-});
+}
 
-var LeftContentButtons = React.createClass({
-    render: function() {
+class LeftContentButtons extends React.Component{
+    render() {
         return (
             <div className="buttons">
         		<a className="upload" href="#"><span>Start Uploading</span></a>
@@ -108,10 +143,10 @@ var LeftContentButtons = React.createClass({
       		</div>
         );
     }
-});
+}
 
-var LeftContentFooter = React.createClass({
-    render: function() {
+class LeftContentFooter extends React.Component {
+    render() {
         return (
             <ul className="footer">
         		<li><a href="#"><span>About Us</span></a></li>
@@ -121,83 +156,82 @@ var LeftContentFooter = React.createClass({
       		</ul>
         );
     }
-});
+}
 
-var LeftContent = React.createClass({
-        render: function() {
-            return (
-                <div className="left-content">
-					<LeftContentHeader/>
-					<LeftContentSlogan/>
-					<LeftContentButtons/>
-					<LeftContentFooter/>
-				</div>
-            );
-        }
-    });
-//Right Content
-var RightContent = connectToStores({
-    getStores() {
-        return [WorkStore, CreatorStore];
-    },
-
-    getPropsFromStores() {
-        var creatorState = CreatorStore.getState();
-        var workState = WorkStore.getState();
-        return {
-            creatorInfo: creatorState.info,
-            workInfo: workState.info
-        }
+class LeftContent extends React.Component {
+    render() {
+        return (
+            <div className="left-content">
+				<LeftContentHeader/>
+				<LeftContentSlogan/>
+				<LeftContentButtons/>
+				<LeftContentFooter/>
+			</div>
+        );
     }
-}, React.createClass({
-    displayName: "Right Content",
+}
 
-    getInitialState: function() {
+//Right Content
+class RightContent extends React.Component {
+    constructor() {
+        super();
+
+        this.displayName = 'RightContent';
+        this.state = TYPE_LIST;
+    }
+
+    static getStores(props) {
+        return [ContentStore];
+    }
+
+    static getPropsFromStores(props) {
+        var contentState = ContentStore.getState();
+
         return {
-            type: [
-                "creator",
-                "work"
-            ]
+            info: contentState.info,
         };
-    },
-    componentWillMount: function() {
+    }
+    
+    componentWillMount() {
         ContentActions.fetchContent(this.state.type);
-    },
-    render: function() {
-        return(
+    }
+
+    render() {
+        let data = this.props.info,
+            rightBoxes = this.state.type.map((type, index) => {
+                return (<RightBox key={index} data={data[type]} type={type}/>);
+            });
+
+        return (
             <div className = "right-content">
-                <RightBox data = {this.props.creatorInfo} type = "creator"/>
-                <RightBox data = {this.props.workInfo} type = "work"/>
+                {rightBoxes}
             </div>
         );
     }
+}
 
-}));
+RightContent = connectToStores(RightContent);
 
-var RightBox = React.createClass({
-    render: function() {        
+class RightBox extends React.Component {
+    render() {
+        var rightRow = null;
+        
+        if (this.props.data) {
+            rightRow = (<RightRow data={this.props.data} type={this.props.type}/>);
+        }
+
         return (
             <div> 
                 <RightHeader type={this.props.type}/>
-                <RightRow data={this.props.data} type={this.props.type}/>
+                {rightRow}
             </div>
         );
     }
-});
+}
 
-var RightHeader = React.createClass({
-    render: function() {
-        var title;
-        switch(this.props.type) {
-            case "creator":
-                title = 'Creators of the month';
-                break;
-            case "work": 
-                title = 'Feature Works'
-                break;
-            default:
-                break;
-        }
+class RightHeader extends React.Component {
+    render() {
+        var title = RIGHT_HEADER_TITLE[this.props.type];     
         return (
             <div>
         		<p className="section-title"><span>{title}</span></p>
@@ -205,52 +239,40 @@ var RightHeader = React.createClass({
       		</div>
         );
     }
-});
+}
 
-var RightRow = React.createClass({
-    render: function() {
-        var type = this.props.type;
-        var rowNodes = this.props.data.map(function(data) {
-            return (
-                <RightImage key={data.id} data={data} type ={type}></RightImage>
-            );
-        });
+class RightRow extends React.Component {
+    render() {   
+        let type = this.props.type,
+            rowNodes = this.props.data.map(data => {
+                return (
+                    <RightImage key={data.id} data={data} type={type}></RightImage>
+                );
+            });
+
         return (
-            <div className = "row-detail">
+            <div className="row-detail">
     			{rowNodes}
     		</div>
         );
     }
-});
+}
 
-var RightImage = React.createClass({
-    handleClick: function() {
+class RightImage extends React.Component {
+    handleClick() {
         ContentActions.popupContent(this.props.data, this.props.type);
-    },
-    render: function() {
-        var additionalContent;
-        switch(this.props.type) {
-            case "creator":
-                additionalContent = <div>
-                    <p className="name"><span>{this.props.data.name}</span></p>
-                    <p className="job"><span>{this.props.data.job}</span></p>
-                </div>
-                break;
-            case "work": 
-                additionalContent = null;
-                break;
-            default:
-                additionalContent = null;
-                break;
-        }
+    }
+
+    render() {
+        var additionalContent = RIGHT_ADDITIONAL_CONTENT[this.props.type](this.props.data);
         return (
-            <a className="item" href="#" onClick={this.handleClick}>
+            <a className="item" href="#" onClick={this.handleClick.bind(this)}>
 				<img src={this.props.data.img} alt="Image"/>	
                 {additionalContent}		
 			</a>
         );
     }
-});
+}
 
 ReactDOM.render(<Container/>,
     document.getElementById('wrapper')

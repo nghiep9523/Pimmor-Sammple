@@ -1,28 +1,26 @@
-var alt = require('../alt');
-var ContentActions = require('../actions/ContentActions');
+import alt from '../alt';
+import ContentActions from '../actions/ContentActions';
 
-var PopupStore = alt.createStore({
-    displayName: 'Popup Store',
-
-    bindListeners: {
-        handlePopupContent: ContentActions.POPUP_CONTENT,
-        handleHidePopup: ContentActions.HIDE_POPUP
-    },
-
-    state: {
-        type: "",
-        info: null,
-        show: false
-    },
-
-    handlePopupContent: function(data) {
-        this.setState({info : data.info, type: data.type, show: true});
-    },
-    
-    handleHidePopup: function() {
-        this.setState({show: false});
+class PopupStore {
+    constructor() {
+        this.bindListeners({
+            handlePopupContent: ContentActions.POPUP_CONTENT,
+            handleHidePopup: ContentActions.HIDE_POPUP
+        });
+        this.state = {
+            type: "",
+            info: null,
+            show: false
+        };
     }
 
-});
+    handlePopupContent(data) {
+        this.setState({ info: data.info, type: data.type, show: true });
+    }
 
-module.exports = PopupStore;
+    handleHidePopup() {
+        this.setState({ show: false });
+    }
+};
+
+export default alt.createStore(PopupStore, 'PopupStore');

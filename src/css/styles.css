@@ -214,12 +214,12 @@ a {
 }
 
 .see-all {
-  position: absolute;
   line-height: 30px;
   color: #8a8a8a;
   margin-top: 20px;
   right: 18px;
-  clear: both;
+  clear: right;
+  float: right;
 }
 
 .see-all span {
