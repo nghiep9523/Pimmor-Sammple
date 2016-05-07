@@ -3,6 +3,7 @@
 body {
   margin: auto;
   background-color: #f0f0f0;
+  font-family: 'Open Sans', sans-serif;
 }
 
 a {
@@ -12,10 +13,20 @@ a {
 
 .left-content,
 .right-content {
-  font-family: 'Open Sans', sans-serif;
   float: right;
 }
 
+/*Spinner Placeholder*/
+.spinner-placeholder {
+  width: 100%;
+  height: 300px;
+}
+
+.spinner-placeholder span {
+  width: 100%;
+  height: 100%;
+  float: left;
+}
 
 /*Pop Up*/
 
@@ -217,6 +228,7 @@ a {
   line-height: 30px;
   color: #8a8a8a;
   margin-top: 20px;
+  margin-right: 18px;
   right: 18px;
   clear: right;
   float: right;

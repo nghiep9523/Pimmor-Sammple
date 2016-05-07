@@ -24356,12 +24356,8 @@ var PopupContainer = function (_React$Component2) {
                 return null;
             }
 
-            var creator = false;
-            if (this.props.type == "creator") {
-                creator = true;
-            } else {
-                creator = false;
-            }
+            var additionalContent = RIGHT_ADDITIONAL_CONTENT[this.props.type](this.props.info);
+            var closeIcon = _react2.default.createElement('i', { className: 'fa fa-times', 'aria-hidden': true });
 
             return _react2.default.createElement(
                 'div',
@@ -24376,35 +24372,14 @@ var PopupContainer = function (_React$Component2) {
                         _react2.default.createElement(
                             'span',
                             { className: 'popup-close', onClick: this.handleClick.bind(this) },
-                            'X'
+                            closeIcon
                         )
                     ),
                     _react2.default.createElement(
                         'div',
                         { className: 'popup-content' },
                         _react2.default.createElement('img', { src: this.props.info.img, alt: 'Popup Image' }),
-                        creator ? _react2.default.createElement(
-                            'div',
-                            null,
-                            _react2.default.createElement(
-                                'p',
-                                { className: 'name' },
-                                _react2.default.createElement(
-                                    'span',
-                                    null,
-                                    this.props.info.name
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'p',
-                                { className: 'job' },
-                                _react2.default.createElement(
-                                    'span',
-                                    null,
-                                    this.props.info.job
-                                )
-                            )
-                        ) : null
+                        additionalContent
                     )
                 )
             );
@@ -24695,6 +24670,10 @@ var RightContent = function (_React$Component8) {
                 rightBoxes = this.state.type.map(function (type, index) {
                 return _react2.default.createElement(RightBox, { key: index, data: data[type], type: type });
             });
+            // rightBoxes = [];
+            // for(var prop in data) {
+            //     rightBoxes.push((<RightBox key={prop} data={data[prop]} type={prop}/>));
+            // }
 
             return _react2.default.createElement(
                 'div',
@@ -24735,10 +24714,21 @@ var RightBox = function (_React$Component9) {
     _createClass(RightBox, [{
         key: 'render',
         value: function render() {
-            var rightRow = null;
+            var rightRow;
 
             if (this.props.data) {
                 rightRow = _react2.default.createElement(RightRow, { data: this.props.data, type: this.props.type });
+            } else {
+                var config = {
+                    top: '50%',
+                    left: '50%',
+                    position: 'relative'
+                };
+                rightRow = _react2.default.createElement(
+                    'div',
+                    { className: 'spinner-placeholder' },
+                    _react2.default.createElement(_reactSpinjs2.default, { config: config })
+                );
             }
 
             return _react2.default.createElement(

@@ -77,26 +77,19 @@ class PopupContainer extends React.Component {
             return null;
         }
 
-        var creator = false;
-        if (this.props.type == "creator") {
-            creator = true;
-        } else {
-            creator = false;
-        }
+        var additionalContent = RIGHT_ADDITIONAL_CONTENT[this.props.type](this.props.info);
+        var closeIcon = (<i className="fa fa-times" aria-hidden={true}></i>);
 
         return (
             <div>
                 <div className="popup-overlay" onClick={this.handleClick.bind(this)}></div>
                 <div className="popup">
                      <div className="popup-controls">
-                     <span className="popup-close" onClick={this.handleClick.bind(this)}>X</span>
+                     <span className="popup-close" onClick={this.handleClick.bind(this)}>{closeIcon}</span>
                 </div>
                 <div className="popup-content">
-                        <img src={this.props.info.img} alt="Popup Image"/>
-                         {creator ? <div>
-                        <p className="name"><span>{this.props.info.name}</span></p>
-                        <p className="job"><span>{this.props.info.job}</span></p>
-                    </div>: null}
+                    <img src={this.props.info.img} alt="Popup Image"/>
+                    {additionalContent}
                 </div>
                 </div>                  
             </div>
@@ -201,6 +194,10 @@ class RightContent extends React.Component {
             rightBoxes = this.state.type.map((type, index) => {
                 return (<RightBox key={index} data={data[type]} type={type}/>);
             });
+            // rightBoxes = [];
+        // for(var prop in data) {
+        //     rightBoxes.push((<RightBox key={prop} data={data[prop]} type={prop}/>));
+        // }
 
         return (
             <div className = "right-content">
@@ -214,10 +211,21 @@ RightContent = connectToStores(RightContent);
 
 class RightBox extends React.Component {
     render() {
-        var rightRow = null;
+        var rightRow;
         
         if (this.props.data) {
             rightRow = (<RightRow data={this.props.data} type={this.props.type}/>);
+        } else {
+            var config = {
+                top: '50%',
+                left: '50%',
+                position: 'relative'
+            }
+            rightRow = (
+                <div className='spinner-placeholder'>
+                    <ReactSpinner config={config}/>
+                </div>
+            );
         }
 
         return (
