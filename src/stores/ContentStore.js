@@ -13,9 +13,6 @@ class ContentStore {
             errorMessage: null,
             isLoading: null
         }
-        this.exportPublicMethods({
-            getLoadingState: this.getLoadingState
-        });
     }
 
     handleFetchContent(res) {
@@ -30,10 +27,6 @@ class ContentStore {
 
     handleGetContentFailed(errorMessage) {
         this.setState({ errorMessage: errorMessage });
-    }
-
-    getLoadingState() {
-        return this.state.isLoading;
     }
 };
 

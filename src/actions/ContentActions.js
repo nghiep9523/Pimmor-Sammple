@@ -11,7 +11,6 @@ class ContentActions {
                 this.getContentFailed(err);
             });
         }
-
         return true;
     }
 
@@ -38,4 +37,4 @@ class ContentActions {
     }
 }
 
-module.exports = alt.createActions(ContentActions);
+export default alt.createActions(ContentActions);

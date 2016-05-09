@@ -38,11 +38,11 @@ app.get("/creator", function(req, res) {
       console.error(err);
       process.exit(1);
     }
-    // res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-    // setTimeout(function() {
-    //   res.json(JSON.parse(data));
-    // }, 10000);
-    res.json(JSON.parse(data));
+    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    setTimeout(function() {
+      res.json(JSON.parse(data));
+    }, 10000);
+    // res.json(JSON.parse(data));
   });
 });
 
@@ -58,11 +58,11 @@ app.get("/work", function(req, res) {
       console.error(err);
       process.exit(1);
     }
-    // res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-    // setTimeout(function() {
-    //   res.json(JSON.parse(data));
-    // }, 10000);
-    res.json(JSON.parse(data));
+    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    setTimeout(function() {
+      res.json(JSON.parse(data));
+    }, 10000);
+    // res.json(JSON.parse(data));
   });
 });
 

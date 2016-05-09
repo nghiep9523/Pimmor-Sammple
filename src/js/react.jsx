@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactSpinner from 'react-spinjs'
+import ReactSpinner from 'react-spin'
 import connectToStores from 'alt-utils/lib/connectToStores';
 import ContentActions from '../actions/ContentActions';
 import ContentStore from '../stores/ContentStore';
@@ -9,16 +9,16 @@ import PopupStore from '../stores/PopupStore';
 var TYPE_LIST = {
         type: [
             'creator',
-            'work'
+            'work',
         ]
     },
 
     RIGHT_HEADER_TITLE = {
         creator: 'Creators of the month',
-        work: 'Feature Works'
+        work: 'Feature Works',
     },
 
-    RIGHT_ADDITIONAL_CONTENT = {
+    ADDITIONAL_CONTENT = {
         creator(props) {
             return (
                 <div>
@@ -30,7 +30,7 @@ var TYPE_LIST = {
 
         work(props) {
             return null;
-        }
+        },
     };
 
 //Container
@@ -77,7 +77,7 @@ class PopupContainer extends React.Component {
             return null;
         }
 
-        var additionalContent = RIGHT_ADDITIONAL_CONTENT[this.props.type](this.props.info);
+        var additionalContent = ADDITIONAL_CONTENT[this.props.type](this.props.info);
         var closeIcon = (<i className="fa fa-times" aria-hidden={true}></i>);
 
         return (
@@ -173,6 +173,14 @@ class RightContent extends React.Component {
         this.state = TYPE_LIST;
     }
 
+    static propTypes = {
+        info: React.PropTypes.object
+    }
+
+    static defaultProps = {
+        info: {}
+    }
+
     static getStores(props) {
         return [ContentStore];
     }
@@ -194,11 +202,7 @@ class RightContent extends React.Component {
             rightBoxes = this.state.type.map((type, index) => {
                 return (<RightBox key={index} data={data[type]} type={type}/>);
             });
-            // rightBoxes = [];
-        // for(var prop in data) {
-        //     rightBoxes.push((<RightBox key={prop} data={data[prop]} type={prop}/>));
-        // }
-
+ 
         return (
             <div className = "right-content">
                 {rightBoxes}
@@ -220,7 +224,7 @@ class RightBox extends React.Component {
                 top: '50%',
                 left: '50%',
                 position: 'relative'
-            }
+            };
             rightRow = (
                 <div className='spinner-placeholder'>
                     <ReactSpinner config={config}/>
@@ -272,7 +276,7 @@ class RightImage extends React.Component {
     }
 
     render() {
-        var additionalContent = RIGHT_ADDITIONAL_CONTENT[this.props.type](this.props.data);
+        var additionalContent = ADDITIONAL_CONTENT[this.props.type](this.props.data);
         return (
             <a className="item" href="#" onClick={this.handleClick.bind(this)}>
 				<img src={this.props.data.img} alt="Image"/>	
